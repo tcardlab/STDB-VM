@@ -78,9 +78,11 @@ program.command('set')
       console.log('updated default exe')
     }
 
-    // Update paths
+    // Update paths:
+    // Must always update as its hard to know for sure
+    // what is set "outside the runtime" without terminal restart
+    editPath((pathArr)=>[...pathArr, desired_path])
     if (desired_path !== current_path) {
-      editPath((pathArr)=>[...pathArr, desired_path])
       console.warn(`Restart or patch env:\n\t $env:Path = "${desired_path};" + $env:PATH`)
     }
   }));
@@ -96,12 +98,12 @@ program.command('use-default')
     }
 
     let desired_path = stdb_path;
+    // Must always update as its hard to know for sure
+    // what is set "outside the runtime" without terminal restart
+    editPath((pathArr)=>[...pathArr, desired_path])
     if (desired_path !== current_path) {
-      editPath((pathArr)=>[...pathArr, desired_path])
       console.warn(`Restart or patch env:\n\t $env:Path = "${desired_path};" + $env:PATH`)
-    } else {
-      console.log('you are already on default')
-    }
+    } else { console.log('you are already on default') }
   }));
 
 program.command('latest')
