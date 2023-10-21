@@ -1,0 +1,23 @@
+{
+  "name": "stdb-vm",
+  "version": "0.0.0",
+  "description": "SpacetimeDB Version Manager",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js ignore",
+    "build": "temir build index.js",
+    "start": "node server"
+  },
+  "author": "Thomas J. Card",
+  "license": "ISC",
+  "dependencies": {
+    "@temir/core": "^0.0.20",
+    "axios": "^1.5.1",
+    "commander": "^11.1.0",
+    "string-argv": "^0.3.2"
+  },
+  "devDependencies": {
+    "@temir/cli": "^0.0.20",
+    "cross-env": "^7.0.3"
+  }
+}
