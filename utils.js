@@ -5,15 +5,28 @@ import fs from 'fs'
 import * as stream from 'stream';
 import axios from 'axios';
 
-import { execSync } from "child_process"
-import child_process from "node:child_process"
+import child_process, { execSync } from "node:child_process"
 import { promisify } from 'node:util'
 const execPromise = promisify(child_process.exec)
-
+const finished = promisify(stream.finished);
 
 
 const owner = 'clockworklabs'
 const repo = 'SpacetimeDB'
+let versions_path = path.join(os.homedir(), 'SpacetimeDB', 'versions')
+
+let asset_map = {
+  'win32_*'     :  'spacetime.exe'                ,
+  'linux_x64'   :  'spacetime.linux-amd64.tar.gz' ,
+  'linux_arm64' :  'spacetime.linux-arm64.tar.gz' ,
+  'darwin_x64'  :  'spacetime.darwin-amd64.tar.gz',
+  'darwin_arm64':  'spacetime.darwin-arm64.tar.gz',
+}
+
+function getPath(releaseTag) {
+  return path.join(versions_path, releaseTag)
+}
+
 
 export async function getRemoteVersions() {
   let res = await fetch(`https://api.github.com/repos/${owner}/${repo}/releases`)
@@ -36,7 +49,6 @@ export async function getLatestVersion() {
 }
 
 
-const finished = promisify(stream.finished);
 async function downloadFile(url, dest, assetName) {
   fs.mkdirSync(dest, { recursive: true });
 
@@ -67,12 +79,12 @@ export function getArch() {
   ]
 }
 
-let versions_path = path.join(os.homedir(), 'SpacetimeDB', 'versions')
 
 export function listLocalVersions() {
   // might want to validate they are directories
   return fs.readdirSync(versions_path)
 }
+
 
 export function rmAllVersions() {
   for(let version of listLocalVersions()) {
@@ -83,6 +95,7 @@ export function rmAllVersions() {
   }
 }
 
+
 export function rmVersion(version) {
   let vPath = path.join(versions_path, version)
   if (fs.statSync(vPath)?.isDirectory?.()) {
@@ -90,18 +103,6 @@ export function rmVersion(version) {
   }
 }
 
-let asset_map = {
-  'win32_*'     :  'spacetime.exe'                ,
-  'linux_x64'   :  'spacetime.linux-amd64.tar.gz' ,
-  'linux_arm64' :  'spacetime.linux-arm64.tar.gz' ,
-  'darwin_x64'  :  'spacetime.darwin-amd64.tar.gz',
-  'darwin_arm64':  'spacetime.darwin-arm64.tar.gz',
-}
-
-
-function getPath(releaseTag) {
-  return path.join(versions_path, releaseTag)
-}
 
 export async function downloadRelease(releaseTag) {
   let assetName = asset_map[getArch().join('_')]
@@ -130,6 +131,7 @@ export async function downloadRelease(releaseTag) {
     });
 }
 
+
 export const noRender = function (cb) {
   return async (...args) =>  {
     await cb(...args)
@@ -137,7 +139,7 @@ export const noRender = function (cb) {
   }
 }
 
-//import crossEnv from 'cross-env'
+
 export function editPath(cb) {
   let [osType] = getArch()
 
@@ -160,15 +162,23 @@ export function editPath(cb) {
     execSync(`[Environment]::SetEnvironmentVariable("PATH", "${newPATH}", [EnvironmentVariableTarget]::User)`, {
       shell: "powershell.exe"
     })
-
-    /* // Tmp Update User PATH (to avoid restart)
-    execSync(`$env:PATH = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine)+"${newPATH}";$env:Path -replace ';', "\`n"`, {
-      shell: "powershell.exe"
-    }) */
   } else {
     console.log("OS not supported yet")
     // prob use cross-env to update others
   }
 
   //console.log('Updated Path - please restart terminal...')
+}
+
+
+export function getExePath(dir) {
+  // idk if every platform ends with .exe, so doing this to be safe
+  let files = fs.readdirSync(dir)
+  const spacetimeFile = files.find((filename) => filename.startsWith('spacetime'));
+  
+  if (spacetimeFile) {
+    return path.join(dir, spacetimeFile)
+  } else {
+    throw new Error("No file starting with 'spacetime' found in the directory.");
+  }
 }

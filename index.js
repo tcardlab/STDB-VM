@@ -9,7 +9,7 @@
 import { 
   getRemoteVersions, getCurrentVersion, getLatestVersion, 
   downloadRelease, listLocalVersions, noRender,
-  rmAllVersions, rmVersion, editPath
+  rmAllVersions, rmVersion, editPath, getExePath
 } from "./utils.js"
 
 import { Command } from 'commander';
@@ -18,6 +18,12 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 let pkg_json = require('./package.json')
 
+import {execSync} from 'child_process'
+import { homedir } from "os";
+import path from "path"
+import fs from "fs"
+
+let stdb_path = path.join(homedir(), 'SpacetimeDB')
 
 const program = new Command();
 
@@ -36,23 +42,6 @@ program.command('current')
     // render(App)
   }));
 
-import { homedir } from "os";
-import path from "path"
-import fs from "fs"
-
-function getExePath(dir) {
-  let files = fs.readdirSync(dir)
-  const spacetimeFile = files.find((filename) => filename.startsWith('spacetime'));
-  
-  if (spacetimeFile) {
-    return path.join(dir, spacetimeFile)
-  } else {
-    throw new Error("No file starting with 'spacetime' found in the directory.");
-  }
-}
-
-import {execSync} from 'child_process'
-let stdb_path = path.join(homedir(), 'SpacetimeDB')
 program.command('set')
   .option('<version>', 'specific version to set.')
   .option('-d, --direct', 'Use direct path to SpacetimeDB Version rather than replacing default')
@@ -74,13 +63,6 @@ program.command('set')
     // Does current path match?
     let current_path;
     try{
-      /*// early versions dont provide path...
-        let res = execSync('spacetime version').toString()
-        let match = res.match(/Path: (.*?)\n/)  
-        if (match) { current_path = path.dirname(match[1]) }
-        else { throw new Error('Match not found') } 
-      */
-      // (Get-Command spacetime).path
       let res_path = execSync('where spacetime').toString().split('\n')?.[0] // can match multiple
       current_path = path.dirname(res_path)
     } catch (err) {
@@ -99,7 +81,6 @@ program.command('set')
     // Update paths
     if (desired_path !== current_path) {
       editPath((pathArr)=>[...pathArr, desired_path])
-      //console.warn(`Restart or patch env: $env:Path += ";${desired_path}"`)
       console.warn(`Restart or patch env:\n\t $env:Path = "${desired_path};" + $env:PATH`)
     }
   }));
@@ -117,7 +98,6 @@ program.command('use-default')
     let desired_path = stdb_path;
     if (desired_path !== current_path) {
       editPath((pathArr)=>[...pathArr, desired_path])
-      //console.warn(`Restart or patch env: $env:Path += ";${desired_path}"`)
       console.warn(`Restart or patch env:\n\t $env:Path = "${desired_path};" + $env:PATH`)
     } else {
       console.log('you are already on default')
@@ -170,14 +150,4 @@ program.command('rm')
   }));
 
 
-// Temir passes in the file as an arg, so we gotta remove that in dev mode
-//let args = [...process.argv]
-//if (process.env.npm_command) args.splice(2,1)
-//program.parse(args)
-
 program.parse()
-
-/* program.exitOverride(()=>{
-  console.log('hi')
-  process.exit(0)
-}) */
