@@ -58,11 +58,12 @@ npm start -- <cmd> <args...> <options...>
 - [ ] Selection lists
 - [ ] Publish: Build, npm dist, and make globally accessible 
 <!-- https://blog.logrocket.com/building-typescript-cli-node-js-commander/#making-cli-globally-accessible -->
-<!--https://stackoverflow.com/a/39217735-->
+<!-- https://stackoverflow.com/a/39217735 -->
 - [ ] Refactor (cmd route like directories, group vue and commander cmds, components dir)
 - [ ] Doc generations (determine if cmd or import, iterate over help)
 - [ ] Add support for other OS's
-- [ ] pure semver support so you don't have to be picky with tag names
+- [ ] Pure semver support so you don't have to be picky with tag names
+- [ ] Use loading bar component for downloads
 
 Another question is whether to wrap the whole app in vue
 or whether to just use components as needed.
@@ -73,5 +74,127 @@ I may be able to provide a helper command to start so they do not have to pass p
 
 <br/>
 
+<!-- Insert Generated Docs Below `# Docs` -->
 # Docs
-<!--Insert Generated Docs Below-->
+
+<br/>
+
+
+<h3>help:</h3>
+
+```
+Usage: stdb-vm [options] [command]
+
+SpacetimeDB version manager!
+
+Options:
+  -V, --version   output the version number
+  -h, --help      display help for command
+
+Commands:
+  current         Show active SpacetimeDB version and path.
+  set [options]   Set active SpacetimeDB version by tag name. (Has selector for
+                  no args)
+  use-default     Set SpacetimeDB path back to default `{homeDir}/SpacetimeDB`.
+  latest          Check latest release on github.
+  list            List downloaded SpacetimeDB versions.
+  releases        List SpacetimeDB releases on github.
+  load [options]  Download SpacetimeDB version. (Has selector for no args)
+  rm [options]    Delete SpacetimeDB version. (Has selector for no args)
+  help [command]  display help for command
+```
+
+<h3>current:</h3>
+
+```
+Usage: stdb-vm current [options]
+
+Show active SpacetimeDB version and path.
+
+Options:
+  -h, --help  display help for command
+```
+
+<h3>set:</h3>
+
+```
+Usage: stdb-vm set [options]
+
+Set active SpacetimeDB version by tag name. (Has selector for no args)
+
+Options:
+  <version>     Specific version to set.
+  -d, --direct  Use direct path to SpacetimeDB Version rather than replacing
+                default.
+  -r, --remote  Set version from remote release list.
+  -h, --help    display help for command
+```
+
+<h3>use-default:</h3>
+
+```
+Usage: stdb-vm use-default [options]
+
+Set SpacetimeDB path back to default `{homeDir}/SpacetimeDB`.
+
+Options:
+  -h, --help  display help for command
+```
+
+<h3>latest:</h3>
+
+```
+Usage: stdb-vm latest [options]
+
+Check latest release on github.
+
+Options:
+  -h, --help  display help for command
+```
+
+<h3>list:</h3>
+
+```
+Usage: stdb-vm list [options]
+
+List downloaded SpacetimeDB versions.
+
+Options:
+  -h, --help  display help for command
+```
+
+<h3>releases:</h3>
+
+```
+Usage: stdb-vm releases [options]
+
+List SpacetimeDB releases on github.
+
+Options:
+  -h, --help  display help for command
+```
+
+<h3>load:</h3>
+
+```
+Usage: stdb-vm load [options]
+
+Download SpacetimeDB version. (Has selector for no args)
+
+Options:
+  <version>   Download specific version.
+  -h, --help  display help for command
+```
+
+<h3>rm:</h3>
+
+```
+Usage: stdb-vm rm [options]
+
+Delete SpacetimeDB version. (Has selector for no args)
+
+Options:
+  <version>   Specific version to remove.
+  --all       Download specific version.
+  -h, --help  display help for command
+```

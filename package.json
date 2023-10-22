@@ -2,11 +2,15 @@
   "name": "stdb-vm",
   "version": "0.0.0",
   "description": "SpacetimeDB Version Manager",
-  "type": "module",
   "scripts": {
-    "dev": "node index.js ignore",
     "build": "temir build index.js",
-    "start": "node server"
+    "start": "node server",
+    "docs": "node genDocs.js"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "stdb-vm": "./dist/index.js"
   },
   "author": "Thomas J. Card",
   "license": "ISC",

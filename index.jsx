@@ -1,3 +1,5 @@
+#! /usr/bin/env node
+
 import { render } from '@temir/core'
 import Selector from './components/Selector.vue'
 
@@ -19,16 +21,16 @@ let stdb_path = path.join(homedir(), 'SpacetimeDB')
 const program = new Command();
 
 program
-  .name('STDB-VM')
+  .name(process.env.npm_package_name)
   .description('SpacetimeDB version manager!')
   .version(process.env.npm_package_version)
   // .exitOverride()
 
 
 program.command('current')
-  .description('Active spacetime version')
+  .description('Show active SpacetimeDB version and path.')
   .action(noRender(async () => {
-    // early versions dont provide path...
+    // early versions don't provide path...
     console.log(execSync('where spacetime').toString()) // powershell only (otherwise can use 'where')
     console.log(await getCurrentVersion())
     // render(App)
@@ -60,9 +62,10 @@ function ender(renderer) {
 }
 
 program.command('set')
-  .option('<version>', 'specific version to set.')
-  .option('-d, --direct', 'Use direct path to SpacetimeDB Version rather than replacing default')
-  .option('--remote, -r', 'set version from remote list')
+  .description('Set active SpacetimeDB version by tag name. (Has selector for no args)')
+  .option('<version>', 'Specific version to set.')
+  .option('-d, --direct', 'Use direct path to SpacetimeDB Version rather than replacing default.')
+  .option('-r, --remote', 'Set version from remote release list.')
   .action(async (options, cmd) => {
     // If not given version use app selector (local list? --remote to see full list)
     let version = cmd.args[0]
@@ -88,7 +91,7 @@ program.command('set')
       await renderWait(
         cb => <Selector items={versionArr} onSubmit={cb} wrap={true}/>,
         exit => selected => {
-          console.log('selected:', selected.value)
+          console.log('Selected:', selected.value)
           version = selected.value
           exit()
         }
@@ -99,7 +102,7 @@ program.command('set')
     // If version doesn't exist: attempt download
     if(!listLocalVersions().includes(version)) {
       console.log('Downloading:', version)
-      await downloadRelease(cmd.args[0])
+      await downloadRelease(version)
     }
 
     // Get Paths and Dirs
@@ -117,7 +120,7 @@ program.command('set')
     // replace default exe with desired version
     if (isDefault) {
       fs.copyFileSync(getExePath(version_dir), getExePath(stdb_path)) 
-      console.log('updated default exe')
+      console.log('Updated default exe')
     }
 
     // Update paths:
@@ -132,6 +135,7 @@ program.command('set')
   });
 
 program.command('use-default')
+  .description('Set SpacetimeDB path back to default `{homeDir}/SpacetimeDB`.')
   .action(noRender(async (options, cmd) => {
     let current_path;
     try{
@@ -147,7 +151,7 @@ program.command('use-default')
     editPath((pathArr)=>[...pathArr, desired_path])
     if (desired_path !== current_path) {
       console.warn(`Restart or patch env:\n\t $env:Path = "${desired_path};" + $env:PATH`)
-    } else { console.log('you are already on default') }
+    } else { console.log('Already on default') }
   }));
 
 program.command('latest')
@@ -170,7 +174,7 @@ program.command('releases')
   }));
 
 program.command('load')
-  .description('Split a string into substrings and display as an array')
+  .description('Download SpacetimeDB version. (Has selector for no args)')
   .option('<version>', 'Download specific version.')
   .action(async (_, cmd) => {
     if (cmd.args[0]) {
@@ -187,7 +191,7 @@ program.command('load')
 
     let r = render(<Selector items={remoteVersions} onSubmit={handleLoad} wrap={true} frame={5}/>)
     async function handleLoad(version, index) {
-      console.log('load:', version.value)
+      console.log('Load:', version.value)
       ender(r)
       await downloadRelease(version.value)
       process.exit(0)
@@ -197,8 +201,8 @@ program.command('load')
 
 program.command('rm')
   .allowUnknownOption()
-  .description('Delete SpacetimeDB version.')
-  .option('<version>', 'string to split')
+  .description('Delete SpacetimeDB version. (Has selector for no args)')
+  .option('<version>', 'Specific version to remove.')
   .option('--all', 'Download specific version.')
   .action(async (options, cmd) => {
     let versionArg = cmd.args[0]
@@ -209,7 +213,7 @@ program.command('rm')
     } else {
       let localVersions = toSelectable(listLocalVersions().reverse())
       if (!localVersions.length) {
-        console.log('no local versions found')
+        console.log('No local versions found')
         process.exit(1)
       }
 
@@ -229,3 +233,10 @@ program.command('rm')
   })
 
 program.parse()
+
+/* if (process.env['npm_lifecycle_event'] !== 'docs') {
+  // dont run for doc gen
+  program.parse()
+}
+
+export default program */
