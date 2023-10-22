@@ -2,7 +2,6 @@
   import { ref, computed } from '@vue/runtime-core'
   import {Component} from 'vue'
   import figures from 'figures'
-  //import { computed, withDefaults, watch, ref } from 'vue'
 
   import { TBox, useInput, TText } from '@temir/core'
   import SelectInputItem from './Selector/Item.vue'
@@ -73,7 +72,7 @@
 
   function circularSlice(arr, startIndex) {
     const len = arr.length;
-    let endIndex = +startIndex + +(props.frame_size || len)
+    let endIndex = +startIndex + +(props.frame_size || len) - 1
 
     // Normalize start and end indices to be within the array bounds
     startIndex = wrapNormalize(startIndex, len)
@@ -91,8 +90,6 @@
   const frame = computed(()=>{
     if (!props.frame_size) return mapped.value // full arr
     return circularSlice(mapped.value, offset.value)
-    //if (props.wrap) return circularSlice(mapped.value, offset.value)
-    //return mapped.value.slice(offset.value, offset.value + +props.frame_size)
   })
 
   const selected = computed(()=>{
@@ -110,6 +107,7 @@
     <TText v-if="props.frame_size">{{ (atStart && !props.wrap) ? ' ' : figures.triangleUp }}</TText>
 
     <TBox v-for="item of frame">
+      <!-- would be interesting to put the index/len here if formatted/ padded nicely -->
       <Component :is="props.indicatorComponent" :isSelected="item.id == selected"/>
       <Component :is="props.itemComponent" :isSelected="item.id == selected" :label="''+item.label"/>
     </TBox>
