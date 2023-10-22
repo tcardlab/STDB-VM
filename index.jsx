@@ -35,13 +35,19 @@ program.command('current')
   }));
 
 
-let renderWait = async (component, cb) => {
+let renderPromise = async (component, cb) => {
   return new Promise((resolve, reject) => {
     let r;
     let resolvableCB = cb(()=>r, resolve, reject)
     r = render(component(resolvableCB))
-    // r.waitUntilExit() // oh, didn't know this existed
   })
+}
+
+let renderWait = (component, cb) => {
+  let r;
+  let resolvableCB = cb(()=>ender(r)/* Kill render cb */, r)
+  r = render(component(resolvableCB))
+  return r.waitUntilExit()
 }
 
 function toSelectable(list) {
@@ -68,7 +74,7 @@ program.command('set')
           let remoteVersions = await getRemoteVersions()
           versionArr = toSelectable(remoteVersions.map(release => release.tag_name))
         } else {
-          let localVersions = listLocalVersions()
+          let localVersions = listLocalVersions().reverse()
           versionArr = toSelectable(localVersions)
         }
 
@@ -79,12 +85,12 @@ program.command('set')
       }
 
       // Wait for version to be selected
-      version = await renderWait(
-        (cb) => <Selector items={versionArr} onSubmit={cb}/>,
-        (getRender, resolve, reject) => (version, index) => {
-          console.log('selected:', version.value)
-          ender(getRender())
-          resolve(version.value)
+      await renderWait(
+        cb => <Selector items={versionArr} onSubmit={cb} wrap={true}/>,
+        exit => selected => {
+          console.log('selected:', selected.value)
+          version = selected.value
+          exit()
         }
       )
     }
@@ -103,8 +109,8 @@ program.command('set')
       let res_path = execSync('where spacetime').toString().split('\n')?.[0] // can match multiple
       current_path = path.dirname(res_path)
     } catch (err) {
-      console.log(err.message)
-      process.exit(1)
+      // just means path not set, nbd
+      // console.log(err.message)
     }
 
     // replace default exe with desired version
@@ -178,7 +184,7 @@ program.command('load')
       process.exit(0)
     }
 
-    let r = render(<Selector items={remoteVersions} onSubmit={handleLoad}/>)
+    let r = render(<Selector items={remoteVersions} onSubmit={handleLoad} wrap={true} frame={5}/>)
     async function handleLoad(version, index) {
       console.log('load:', version.value)
       ender(r)
@@ -202,14 +208,14 @@ program.command('rm')
       rmVersion(versionArg)
       process.exit(0)
     } else {
-      let localVersions = toSelectable(listLocalVersions())
+      let localVersions = toSelectable(listLocalVersions().reverse())
       if (!localVersions.length) {
         console.log('no local versions found')
         process.exit(0)
       }
 
       // would be neat to make this synchronous
-      let r = render(<Selector items={localVersions} onSubmit={handleRM}/>)
+      let r = render(<Selector items={localVersions} onSubmit={handleRM} wrap={true}/>)
       function handleRM(version, index) {
         console.log('rm:', version.value)
         rmVersion(version.value)
