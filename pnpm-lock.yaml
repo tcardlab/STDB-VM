@@ -6,22 +6,22 @@ settings:
 
 dependencies:
   '@temir/core':
-    specifier: 0.0.20
+    specifier: ^0.0.20
     version: 0.0.20
   '@vue/runtime-core':
-    specifier: 3.2.37
+    specifier: ^3.2.37
     version: 3.2.37
   axios:
-    specifier: ^1.5.1
+    specifier: 1.5.1
     version: 1.5.1
   commander:
-    specifier: ^11.1.0
+    specifier: 11.1.0
     version: 11.1.0
   figures:
-    specifier: ^5.0.0
+    specifier: 5.0.0
     version: 5.0.0
   vue:
-    specifier: 3.2.37
+    specifier: ^3.2.37
     version: 3.2.37
 
 devDependencies:
@@ -44,7 +44,7 @@ devDependencies:
     specifier: 8.21.0
     version: 8.21.0
   rollup-plugin-polyfill-node:
-    specifier: ^0.12.0
+    specifier: 0.12.0
     version: 0.12.0(rollup@3.29.4)
   sinon:
     specifier: 14.0.0
@@ -1411,7 +1411,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001551
+      caniuse-lite: 1.0.30001553
       electron-to-chromium: 1.4.563
       node-releases: 2.0.13
       update-browserslist-db: 1.0.13(browserslist@4.22.1)
@@ -1461,8 +1461,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite@1.0.30001551:
-    resolution: {integrity: sha512-vtBAez47BoGMMzlbYhfXrMV1kvRF2WP/lqiMuDu1Sb4EE4LKEgjopFDSRtZfdVnslNRpOqV/woE+Xgrwj6VQlg==}
+  /caniuse-lite@1.0.30001553:
+    resolution: {integrity: sha512-N0ttd6TrFfuqKNi+pMgWJTb9qrdJu4JSpgPFLe/lrD19ugC6fZgF0pUewRowDwzdDnb9V41mFcdlYgl/PyKf4A==}
     dev: true
 
   /chai@4.3.10:

@@ -1,41 +1,64 @@
 import { defineConfig } from 'vite';
 
 import vuePlugin from '@vitejs/plugin-vue'
-import viteJsxPlugin from '@vitejs/plugin-vue-jsx'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import { VitePluginNode } from 'vite-plugin-node';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 export default defineConfig({
-  /* root: './',
-  base: '', */
+  clearScreen: false,
+  logLevel: 'error',
+  entries: ['./index'],
+  clean: false,
+  declaration: true,
+  rollup: {
+    emitCJS: true,
+  },
+  resolve: {
+    mainFields: ['index'],
+  },
+  //root: './',
+  //base: ,
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment',
+  },
   plugins: [
-    // nodePolyfills(),
-    ...VitePluginNode({
-      appPath: './index.jsx',
-      tsCompiler: 'esbuild',
+    //nodePolyfills(),
+    vueJsx({
+
     }),
-    vuePlugin(),
-    viteJsxPlugin(),
+    vuePlugin({
+      
+    }),
+    ...VitePluginNode({
+      appPath: './dist/index.mjs',
+      //tsCompiler: '',
+    }),
+    
   ],
   build: {
-    target: 'esnext',
+    minify: false,
+    //target: 'modules',
     outDir: './dist',
     lib: {
       entry: 'index.jsx',
       name: 'default',
-      fileName: 'index',
+      fileName: 'index.js',
       formats: ['es']
     },
     rollupOptions: {
-      //external: ['@vue/runtime-core', '@temir/core', 'vue', ],
-      output: {
-        entryFileNames: `index.js`,
-        //manualChunks: undefined,
-        /* globals: {
-          '@vue/runtime-core': '@vue/runtime-core',
-          '@temir/core': '@temir/core',
-        } */
-      }
+      external: ['@vue/runtime-core', '@temir/core', 'vue/server-renderer', 'vue'],
+     /*  output: {
+        //entryFileNames: `index.js`,
+        // manualChunks: undefined,
+        globals: {
+          '@vue/runtime-core': 'runtimeCore',
+          '@temir/core': 'temir',
+          'vue/server-renderer': 'serverRenderer',
+          'vue': 'vue'
+        }
+      } */
     }
   }
 })
