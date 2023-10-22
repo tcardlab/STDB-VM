@@ -1,6 +1,5 @@
 <script setup>
   import { TBox, TText } from '@temir/core'
-
   let props = defineProps(['isSelected'])
 </script>
 
