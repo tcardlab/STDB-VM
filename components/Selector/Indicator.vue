@@ -1,6 +1,5 @@
 <script setup>
   import { TBox, TText } from '@temir/core'
-  import figures from 'figures'
 
   let props = defineProps(['isSelected'])
 </script>
@@ -10,7 +9,7 @@
     <TText 
       v-if="props.isSelected" color="blue"
     > 
-      {{ figures.pointer }}
+      {{ '❯' }}
     </TText>
     <TText v-else>{{' '}}</TText>
   </TBox>

@@ -1,10 +1,12 @@
 // #! /usr/bin/env node
 
 import { render } from '@temir/core'
-// import Selector from './components/Selector.vue'
+import Selector from './components/Selector.vue'
 
-import Item from './components/Selector/Item.vue'
-render(<Item label={'hi'} />)
+let remoteVersions = [
+  {label: 'label', value: 'value'}
+]
+render(<Selector items={remoteVersions} onSubmit={(el)=>console.log(el)} wrap={true} frame={5}/>)
 
 // import { 
 //   getRemoteVersions, getCurrentVersion, getLatestVersion, 
