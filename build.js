@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import {join} from 'path';
 
 import vuePlugin from '@vitejs/plugin-vue'
 import viteJsxPlugin from '@vitejs/plugin-vue-jsx'
@@ -7,10 +6,13 @@ import { VitePluginNode } from 'vite-plugin-node';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
 export default defineConfig({
+  /* root: './',
+  base: '', */
   plugins: [
-    nodePolyfills(),
+    // nodePolyfills(),
     ...VitePluginNode({
       appPath: './index.jsx',
+      tsCompiler: 'esbuild',
     }),
     vuePlugin(),
     viteJsxPlugin(),
@@ -21,25 +23,19 @@ export default defineConfig({
     lib: {
       entry: 'index.jsx',
       name: 'default',
-      fileName: 'index.js',
+      fileName: 'index',
+      formats: ['es']
     },
     rollupOptions: {
-      //external: ['@vue/runtime-core', '@temir/core', 'child_process'],
+      //external: ['@vue/runtime-core', '@temir/core', 'vue', ],
       output: {
-        output: {
-          manualChunks: undefined,
-        },
+        entryFileNames: `index.js`,
+        //manualChunks: undefined,
         /* globals: {
           '@vue/runtime-core': '@vue/runtime-core',
           '@temir/core': '@temir/core',
-          'child_process': 'child_process'
         } */
       }
-    },
-  },
-  resolve: {
-    alias: [
-      { find: '~', replacement: join('./') }
-    ]
+    }
   }
 })

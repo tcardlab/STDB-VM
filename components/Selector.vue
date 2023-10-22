@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { ref, computed } from '@vue/runtime-core'
-  import {Component} from 'vue'
   import figures from 'figures'
 
   import { TBox, useInput, TText } from '@temir/core'
@@ -48,6 +47,7 @@
     }
 
     else if (key.downArrow) {
+      console.log('REEEE')
       if (atFrameEnd) { 
         if (atArrEnd && !props.wrap) return
         return offset.value = wrapNormalize(offset.value + 1, mapLen)

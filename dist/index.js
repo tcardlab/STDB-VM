@@ -18,10 +18,10 @@ const _sfc_main$2 = /* @__PURE__ */ defineComponent({
   __ssrInlineRender: true,
   props: {
     isSelected: { type: Boolean },
-    label: {}
+    label: null
   },
   setup(__props) {
-    let props = __props;
+    const props = __props;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(TBox), _attrs, {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
@@ -70,10 +70,10 @@ const _sfc_main$1 = /* @__PURE__ */ defineComponent({
   __name: "Indicator",
   __ssrInlineRender: true,
   props: {
-    isSelected: {}
+    isSelected: null
   },
   setup(__props) {
-    let props = __props;
+    const props = __props;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(TBox), mergeProps({ marginRight: 1 }, _attrs), {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
@@ -143,15 +143,15 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
   props: {
     items: { default: () => [] },
     value: { default: 0 },
-    frame_size: {},
+    frame_size: null,
     wrap: { type: Boolean, default: false },
     indicatorComponent: { default: _sfc_main$1 },
     itemComponent: { default: _sfc_main$2 },
-    onSelect: {},
-    onHighlight: {}
+    onSelect: null,
+    onHighlight: null
   },
   emits: ["submit"],
-  setup(__props, { emit: __emit }) {
+  setup(__props, { emit }) {
     const props = __props;
     function wrapNormalize(index, len) {
       return (index % len + len) % len;
@@ -171,6 +171,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
         }
         highlight.value = ((highlight.value - 1) % frameLen + frameLen) % frameLen;
       } else if (key.downArrow) {
+        console.log("REEEE");
         if (atFrameEnd) {
           if (atArrEnd && !props.wrap)
             return;
@@ -209,7 +210,6 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     });
     let atStart = computed(() => selected.value === 0);
     let atEnd = computed(() => selected.value === mapped.value.length - 1);
-    const emit = __emit;
     return (_ctx, _push, _parent, _attrs) => {
       _push(ssrRenderComponent(unref(TBox), mergeProps({ flexDirection: "column" }, _attrs), {
         default: withCtx((_, _push2, _parent2, _scopeId) => {
@@ -508,6 +508,9 @@ function getExePath(dir) {
   }
 }
 
+render(createVNode(_sfc_main$2, {
+  "label": 'HI'
+}, null));
 let stdb_path = path.join(homedir(), 'SpacetimeDB');
 const program = new Command();
 program.name('stdb-vm') //process.env.npm_package_name)
