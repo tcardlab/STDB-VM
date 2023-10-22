@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@temir/cli": "^0.0.20",
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "tsup": "6.2.1"
   }
 }
