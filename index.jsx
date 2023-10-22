@@ -1,13 +1,5 @@
 import { render } from '@temir/core'
-import App from './App.vue'
-//import Selector from './Selector.vue'
-
-//render(App)
-
-/*
-  i think i can just use an event emitter to send desired 
-  component and data/props to update renderer
-*/
+import Selector from './components/Selector.vue'
 
 import { 
   getRemoteVersions, getCurrentVersion, getLatestVersion, 
@@ -16,10 +8,6 @@ import {
 } from "./utils.js"
 
 import { Command } from 'commander';
-
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-let pkg_json = require('./package.json')
 
 import {execSync} from 'child_process'
 import { homedir } from "os";
@@ -33,7 +21,8 @@ const program = new Command();
 program
   .name('STDB-VM')
   .description('SpacetimeDB version manager!')
-  .version(pkg_json.version) // process.env.npm_package_version
+  .version(process.env.npm_package_version)
+  // .exitOverride()
 
 
 program.command('current')
@@ -45,16 +34,59 @@ program.command('current')
     // render(App)
   }));
 
+
+let renderWait = async (component, cb) => {
+  return new Promise((resolve, reject) => {
+    let r;
+    let resolvableCB = cb(()=>r, resolve, reject)
+    r = render(component(resolvableCB))
+    // r.waitUntilExit() // oh, didn't know this existed
+  })
+}
+
+function toSelectable(list) {
+  return list.map(el =>({label:el, value:el}))
+}
+
+function ender(renderer) {
+  renderer.clear()
+  renderer.unmount()
+}
+
 program.command('set')
   .option('<version>', 'specific version to set.')
   .option('-d, --direct', 'Use direct path to SpacetimeDB Version rather than replacing default')
   .option('--remote, -r', 'set version from remote list')
-  .action(noRender(async (options, cmd) => {
+  .action(async (options, cmd) => {
     // If not given version use app selector (local list? --remote to see full list)
     let version = cmd.args[0]
     let isDefault = options.direct !== true
     if (!version) {
-      console.log("use app selector on:", options.remote ? 'remote': 'local' )
+      let versionArr;
+      GET_VERSIONS : {
+        if (options.remote) {
+          let remoteVersions = await getRemoteVersions()
+          versionArr = toSelectable(remoteVersions.map(release => release.tag_name))
+        } else {
+          let localVersions = listLocalVersions()
+          versionArr = toSelectable(localVersions)
+        }
+
+        if (!versionArr.length) {
+          console.log('No remote versions found?')
+          process.exit(0)
+        }
+      }
+
+      // Wait for version to be selected
+      version = await renderWait(
+        (cb) => <Selector items={versionArr} onSubmit={cb}/>,
+        (getRender, resolve, reject) => (version, index) => {
+          console.log('selected:', version.value)
+          ender(getRender())
+          resolve(version.value)
+        }
+      )
     }
 
     // If version doesn't exist: attempt download
@@ -63,17 +95,17 @@ program.command('set')
       await downloadRelease(cmd.args[0])
     }
 
-    // Does current path match?
+    // Get Paths and Dirs
+    let version_dir = path.join(stdb_path, 'versions', version)
+    let desired_path = isDefault ? stdb_path : version_dir
     let current_path;
     try{
       let res_path = execSync('where spacetime').toString().split('\n')?.[0] // can match multiple
       current_path = path.dirname(res_path)
     } catch (err) {
       console.log(err.message)
+      process.exit(1)
     }
-
-    let version_dir = path.join(stdb_path, 'versions', version)
-    let desired_path = isDefault ? stdb_path : version_dir
 
     // replace default exe with desired version
     if (isDefault) {
@@ -88,7 +120,9 @@ program.command('set')
     if (desired_path !== current_path) {
       console.warn(`Restart or patch env:\n\t $env:Path = "${desired_path};" + $env:PATH`)
     }
-  }));
+
+    process.exit(0)
+  });
 
 program.command('use-default')
   .action(noRender(async (options, cmd) => {
@@ -131,119 +165,58 @@ program.command('releases')
 program.command('load')
   .description('Split a string into substrings and display as an array')
   .option('<version>', 'Download specific version.')
-  .action(noRender(async (_, cmd) => {
-    console.log("load", cmd.args[0])
-    if (cmd.args[0]) return await downloadRelease(cmd.args[0])
+  .action(async (_, cmd) => {
+    if (cmd.args[0]) {
+      await downloadRelease(cmd.args[0])
+      process.exit(0)
+    }
 
-    console.log('will use app selector')
-  }));
+    let releases = await getRemoteVersions()
+    let remoteVersions = toSelectable(releases.map(release => release.tag_name))
+    if (!remoteVersions.length) {
+      console.log('No remote versions found?')
+      process.exit(0)
+    }
+
+    let r = render(<Selector items={remoteVersions} onSubmit={handleLoad}/>)
+    async function handleLoad(version, index) {
+      console.log('load:', version.value)
+      ender(r)
+      await downloadRelease(version.value)
+      process.exit(0)
+    }
+  });
+
 
 program.command('rm')
   .allowUnknownOption()
   .description('Delete SpacetimeDB version.')
   .option('<version>', 'string to split')
   .option('--all', 'Download specific version.')
-  .action(noRender((options, cmd) => {
+  .action((options, cmd) => {
     let versionArg = cmd.args[0]
     if (options.all) {
-      return rmAllVersions()
+      rmAllVersions()
+      process.exit(0)
     } else if (versionArg) {
       rmVersion(versionArg)
+      process.exit(0)
     } else {
-      console.log('app selector...')
+      let localVersions = toSelectable(listLocalVersions())
+      if (!localVersions.length) {
+        console.log('no local versions found')
+        process.exit(0)
+      }
+
+      // would be neat to make this synchronous
+      let r = render(<Selector items={localVersions} onSubmit={handleRM}/>)
+      function handleRM(version, index) {
+        console.log('rm:', version.value)
+        rmVersion(version.value)
+        ender(r)
+        process.exit(0)
+      }
     }
-  }));
-
-
-import Selector from './Selector.vue'
-
-
-program.command('test')
-  .action((options, cmd) => {
-    let r = render(Selector)
-    //setTimeout(()=>r.unmount(), 3e3)
-  });
-
-
-
-  const items = [
-    {
-      label: '1',
-      value: 'Vue',
-    },
-    {
-      label: '2',
-      value: 'Vite',
-    },
-    {
-      label: '3',
-      value: 'Temir',
-    },
-    {
-      label: '4',
-      value: 'Vue',
-    },
-    {
-      label: '5',
-      value: 'Vite',
-    },
-    {
-      label: '6',
-      value: 'Temir',
-    },
-    {
-      label: '7',
-      value: 'Vue',
-    },
-    {
-      label: '8',
-      value: 'Vite',
-    },
-    {
-      label: '9',
-      value: 'Temir',
-    },
-    {
-      label: '10',
-      value: 'Vue',
-    },
-    {
-      label: '11',
-      value: 'Vite',
-    },
-    {
-      label: '12',
-      value: 'Temir',
-    },
-  ]
-  
-  import Selector2 from './components/Selector.vue'
-
-  program.command('test2')
-    .action((options, cmd) => {
-      let r = render(<Selector2 items={items} onSubmit={onSelect} frame_size="4"/>)
-      function onSelect(value) {
-        console.log('selected', value)
-        r.clear()
-        r.unmount()
-        process.exit(0)
-      }
-      //setTimeout(()=>r.unmount(), 3e3)
-    });
-
-  program.command('test3')
-    .action((options, cmd) => {
-      let r = render(<Selector2 items={items} onSubmit={onSelect} frame_size="4" wrap={true} />)
-      function onSelect(value, index) {
-        console.log('selected', value)
-        r.clear()
-        r.unmount()
-        process.exit(0)
-      }
-      //setTimeout(()=>r.unmount(), 3e3)
-    });
-  
-  
-
+  })
 
 program.parse()
