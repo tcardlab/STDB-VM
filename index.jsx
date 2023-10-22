@@ -79,8 +79,8 @@ program.command('set')
         }
 
         if (!versionArr.length) {
-          console.log('No remote versions found?')
-          process.exit(0)
+          console.log(`No ${options.remote ? 'remote' : 'local'} versions found?`)
+          process.exit(1)
         }
       }
 
@@ -93,6 +93,7 @@ program.command('set')
           exit()
         }
       )
+      if(!version) process.exit(1) // quit without selecting
     }
 
     // If version doesn't exist: attempt download
@@ -181,7 +182,7 @@ program.command('load')
     let remoteVersions = toSelectable(releases.map(release => release.tag_name))
     if (!remoteVersions.length) {
       console.log('No remote versions found?')
-      process.exit(0)
+      process.exit(1)
     }
 
     let r = render(<Selector items={remoteVersions} onSubmit={handleLoad} wrap={true} frame={5}/>)
@@ -199,30 +200,32 @@ program.command('rm')
   .description('Delete SpacetimeDB version.')
   .option('<version>', 'string to split')
   .option('--all', 'Download specific version.')
-  .action((options, cmd) => {
+  .action(async (options, cmd) => {
     let versionArg = cmd.args[0]
     if (options.all) {
       rmAllVersions()
-      process.exit(0)
     } else if (versionArg) {
       rmVersion(versionArg)
-      process.exit(0)
     } else {
       let localVersions = toSelectable(listLocalVersions().reverse())
       if (!localVersions.length) {
         console.log('no local versions found')
-        process.exit(0)
+        process.exit(1)
       }
 
-      // would be neat to make this synchronous
-      let r = render(<Selector items={localVersions} onSubmit={handleRM} wrap={true}/>)
-      function handleRM(version, index) {
-        console.log('rm:', version.value)
-        rmVersion(version.value)
-        ender(r)
-        process.exit(0)
-      }
+      let version;
+      await renderWait(
+        cb => <Selector items={localVersions} onSubmit={cb} wrap={true}/>,
+        exit => selected => {
+          console.log('rm:', selected.value)
+          version = selected.value
+          exit()
+      })
+      if (!version) process.exit(1) // exit without selecting
+      rmVersion(version)
     }
+
+    process.exit(0)
   })
 
 program.parse()
