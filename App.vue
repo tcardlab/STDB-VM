@@ -1,6 +1,9 @@
 <script setup>
   import { ref } from '@vue/runtime-core'
   import { TBox, TText } from '@temir/core'
+
+  const props = defineProps(['thing'])
+
   const count = ref(0)
   setInterval(() => {
     count.value++
