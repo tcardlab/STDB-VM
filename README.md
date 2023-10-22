@@ -68,6 +68,7 @@ or whether to just use components as needed.
 
 I am not sure if the `.spacetime` directory is subject to breaking changes.
 I may need to version that as well and inform users to pass that path via `spacetime start <STDB_PATH>`
+I may be able to provide a helper command to start so they do not have to pass path manually.
 
 <br/>
 
