@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import { ref } from '@vue/runtime-core'
   import { TBox, TText } from '@temir/core'
+  console.log('hi')
   const count = ref(0)
   setInterval(() => {
     count.value++

@@ -4,4 +4,4 @@
 import { runDevServer } from '@temir/cli'
 
 // Dev
-runDevServer('./index.js')
+runDevServer('./index.jsx')

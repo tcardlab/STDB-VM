@@ -12,8 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "@temir/core": "^0.0.20",
+    "@temir/select-input": "^0.0.20",
     "axios": "^1.5.1",
     "commander": "^11.1.0",
+    "figures": "^5.0.0",
     "string-argv": "^0.3.2"
   },
   "devDependencies": {

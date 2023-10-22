@@ -1,6 +1,9 @@
-//import { render } from '@temir/core'
+import { render } from '@temir/core'
+import App from './App.vue'
+//import Selector from './Selector.vue'
 
-//import App from './App.vue'
+//render(App)
+
 /*
   i think i can just use an event emitter to send desired 
   component and data/props to update renderer
@@ -13,8 +16,8 @@ import {
 } from "./utils.js"
 
 import { Command } from 'commander';
-import { createRequire } from "module";
 
+import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 let pkg_json = require('./package.json')
 
@@ -150,6 +153,97 @@ program.command('rm')
       console.log('app selector...')
     }
   }));
+
+
+import Selector from './Selector.vue'
+
+
+program.command('test')
+  .action((options, cmd) => {
+    let r = render(Selector)
+    //setTimeout(()=>r.unmount(), 3e3)
+  });
+
+
+
+  const items = [
+    {
+      label: '1',
+      value: 'Vue',
+    },
+    {
+      label: '2',
+      value: 'Vite',
+    },
+    {
+      label: '3',
+      value: 'Temir',
+    },
+    {
+      label: '4',
+      value: 'Vue',
+    },
+    {
+      label: '5',
+      value: 'Vite',
+    },
+    {
+      label: '6',
+      value: 'Temir',
+    },
+    {
+      label: '7',
+      value: 'Vue',
+    },
+    {
+      label: '8',
+      value: 'Vite',
+    },
+    {
+      label: '9',
+      value: 'Temir',
+    },
+    {
+      label: '10',
+      value: 'Vue',
+    },
+    {
+      label: '11',
+      value: 'Vite',
+    },
+    {
+      label: '12',
+      value: 'Temir',
+    },
+  ]
+  
+  import Selector2 from './components/Selector.vue'
+
+  program.command('test2')
+    .action((options, cmd) => {
+      let r = render(<Selector2 items={items} onSubmit={onSelect} frame_size="4"/>)
+      function onSelect(value) {
+        console.log('selected', value)
+        r.clear()
+        r.unmount()
+        process.exit(0)
+      }
+      //setTimeout(()=>r.unmount(), 3e3)
+    });
+
+  program.command('test3')
+    .action((options, cmd) => {
+      let r = render(<Selector2 items={items} onSubmit={onSelect} frame_size="4" wrap={true} />)
+      function onSelect(value, index) {
+        console.log('selected', value)
+        r.clear()
+        r.unmount()
+        process.exit(0)
+      }
+      //setTimeout(()=>r.unmount(), 3e3)
+    });
+  
+  
 
 
 program.parse()
