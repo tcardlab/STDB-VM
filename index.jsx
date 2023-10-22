@@ -1,4 +1,4 @@
-// #! /usr/bin/env node
+#! /usr/bin/env node
 
 import { render } from '@temir/core'
 import Selector from './components/Selector.vue'
