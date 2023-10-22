@@ -37,7 +37,7 @@ stdb-vm use-default
 
 ## Getting Started
 
-> Assumes you already have [SpacetimeDB](https://spacetimedb.com/install) installed
+<!-- > Assumes you already have [SpacetimeDB](https://spacetimedb.com/install) installed -->
 
 Using:
 ```shell
@@ -62,6 +62,7 @@ npm start -- <cmd> <args...> <options...>
 - [ ] Refactor (cmd route like directories, group vue and commander cmds, components dir)
 - [ ] Doc generations (determine if cmd or import, iterate over help)
 - [ ] Add support for other OS's
+- [ ] pure semver support so you don't have to be picky with tag names
 
 Another question is whether to wrap the whole app in vue
 or whether to just use components as needed.
