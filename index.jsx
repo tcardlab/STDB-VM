@@ -93,6 +93,7 @@ program.command('set')
           exit()
         }
       )
+      if (!version) process.exit(1)
     }
 
     // If version doesn't exist: attempt download
@@ -174,23 +175,29 @@ program.command('load')
   .action(async (_, cmd) => {
     if (cmd.args[0]) {
       await downloadRelease(cmd.args[0])
-      process.exit(0)
+    } 
+    
+    else {
+      let releases = await getRemoteVersions()
+      let remoteVersions = toSelectable(releases.map(release => release.tag_name))
+      if (!remoteVersions.length) {
+        console.log('No remote versions found?')
+        process.exit(1)
+      }
+
+      let version;
+      await renderWait(
+        cb => <Selector items={remoteVersions} onSubmit={cb} wrap={true} frame={5}/>,
+        exit => selected => {
+          console.log('load:', selected.value)
+          version = selected.value
+          exit()
+        }
+      )
+      if (version) await downloadRelease(version)
     }
 
-    let releases = await getRemoteVersions()
-    let remoteVersions = toSelectable(releases.map(release => release.tag_name))
-    if (!remoteVersions.length) {
-      console.log('No remote versions found?')
-      process.exit(0)
-    }
-
-    let r = render(<Selector items={remoteVersions} onSubmit={handleLoad} wrap={true} frame={5}/>)
-    async function handleLoad(version, index) {
-      console.log('load:', version.value)
-      ender(r)
-      await downloadRelease(version.value)
-      process.exit(0)
-    }
+    process.exit(0)
   });
 
 
@@ -199,30 +206,32 @@ program.command('rm')
   .description('Delete SpacetimeDB version.')
   .option('<version>', 'string to split')
   .option('--all', 'Download specific version.')
-  .action((options, cmd) => {
+  .action(async (options, cmd) => {
     let versionArg = cmd.args[0]
     if (options.all) {
       rmAllVersions()
-      process.exit(0)
     } else if (versionArg) {
       rmVersion(versionArg)
-      process.exit(0)
     } else {
       let localVersions = toSelectable(listLocalVersions().reverse())
       if (!localVersions.length) {
         console.log('no local versions found')
-        process.exit(0)
+        process.exit(1)
       }
 
-      // would be neat to make this synchronous
-      let r = render(<Selector items={localVersions} onSubmit={handleRM} wrap={true}/>)
-      function handleRM(version, index) {
-        console.log('rm:', version.value)
-        rmVersion(version.value)
-        ender(r)
-        process.exit(0)
-      }
+      let version;
+      await renderWait(
+        cb => <Selector items={localVersions} onSubmit={cb} wrap={true}/>,
+        exit => selected => {
+          console.log('rm:', selected.value)
+          version = selected.value
+          exit()
+        }
+      )
+      if (version) rmVersion(version)
     }
+
+    process.exit(0)
   })
 
 program.parse()
