@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "SpacetimeDB Version Manager",
   "scripts": {
-    "build": "temir build index.js",
+    "build": "vite build --config build.js",
     "start": "node server",
     "docs": "node genDocs.js"
   },
@@ -21,6 +21,11 @@
     "figures": "^5.0.0"
   },
   "devDependencies": {
-    "@temir/cli": "^0.0.20"
+    "@temir/cli": "^0.0.20",
+    "@vitejs/plugin-vue": "^4.4.0",
+    "@vitejs/plugin-vue-jsx": "^3.0.2",
+    "rollup-plugin-polyfill-node": "^0.12.0",
+    "vite": "^4.5.0",
+    "vite-plugin-node": "^3.0.2"
   }
 }

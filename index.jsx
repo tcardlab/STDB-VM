@@ -21,9 +21,9 @@ let stdb_path = path.join(homedir(), 'SpacetimeDB')
 const program = new Command();
 
 program
-  .name(process.env.npm_package_name)
+  .name('stdb-vm')//process.env.npm_package_name)
   .description('SpacetimeDB version manager!')
-  .version(process.env.npm_package_version)
+  .version('v0.0.0') //process.env.npm_package_version)
   // .exitOverride()
 
 
