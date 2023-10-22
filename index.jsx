@@ -3,8 +3,8 @@
 import { render } from '@temir/core'
 // import Selector from './components/Selector.vue'
 
-import App from "./App.vue"
-render(<App thing={true} />)
+import Item from './components/Selector/Item.vue'
+render(<Item label={'hi'} />)
 
 // import { 
 //   getRemoteVersions, getCurrentVersion, getLatestVersion, 
