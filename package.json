@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "SpacetimeDB Version Manager",
   "scripts": {
-    "build": "temir build index.js",
+    "build": "temir build index.jsx",
     "start": "node server",
     "docs": "node genDocs.js"
   },
@@ -21,6 +21,7 @@
     "figures": "^5.0.0"
   },
   "devDependencies": {
-    "@temir/cli": "^0.0.20"
+    "@temir/cli": "^0.0.20",
+    "vue": "^3.2.37"
   }
 }

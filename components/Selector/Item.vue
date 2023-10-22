@@ -1,11 +1,7 @@
-<script setup lang="ts">
+<script setup>
   import { TBox, TText } from '@temir/core'
-  export interface IndicatorProps {
-    isSelected?: boolean
-    label: string
-  }
 
-  let props = defineProps<IndicatorProps>()
+  let props = defineProps(['isSelected', 'label'])
 </script>
 
 <template>

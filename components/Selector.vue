@@ -1,29 +1,19 @@
-<script setup lang="ts">
+<script setup>
   import { ref, computed } from '@vue/runtime-core'
-  import {Component} from 'vue'
   import figures from 'figures'
 
   import { TBox, useInput, TText } from '@temir/core'
   import SelectInputItem from './Selector/Item.vue'
   import Indicator from './Selector/Indicator.vue'
 
-  export interface TSelectInputProps {
-    items?: Array<{value:any, label:string|number}>
-    value?: number
-    frame_size?: number
-    wrap?: boolean
-    indicatorComponent?: typeof Indicator
-    itemComponent?: typeof SelectInputItem
-    onSelect?: (item: any) => void
-    onHighlight?: (item: any) => void
-  }
-
-  const props = withDefaults(defineProps<TSelectInputProps>(), {
-    items: ()=>[],
-    value: 0,
-    indicatorComponent: Indicator,
-    itemComponent: SelectInputItem,
-    wrap:false
+  const props = defineProps({
+    items: {default: []},
+    value: {default: 0},
+    indicatorComponent: {default: Indicator},
+    itemComponent: {default: SelectInputItem},
+    wrap: {default: false},
+    frame_size: {},
+    onSelect: {}
   })
 
   function wrapNormalize(index, len) {
@@ -62,8 +52,8 @@
 
   useInput(onHandle)
 
-  type Mapped = Array<{value:any, label:string|number, id:number}>
-  const mapped = computed(()=>props.items.reduce((acc:Mapped, el, i)=>[
+  // type Mapped = Array<{value:any, label:string|number, id:number}>
+  const mapped = computed(()=>props.items.reduce((acc, el, i)=>[
     ...acc, {id: i, label: el.label, value:el.value}
   ], []))
 
