@@ -2,11 +2,15 @@
 
 import temir from '@temir/core'
 let { render } = temir
-//import Selector from './components/Selector.vue'
+import Selector from './components/Selector.vue'
 
-import SelectInputItem from './components/Selector/Item.vue' 
+//import SelectInputItem from './components/Selector/Item.vue' 
 
-let r = render(<SelectInputItem/>, {patchConsole: false}) // {patchConsole: false}
+let arr = [
+  {label: 'label', value: 'value'}
+]
+
+let r = render(<Selector items={arr} onSubmit={(el)=>console.log(el)} wrap={true}/>, {patchConsole: false}) // {patchConsole: false}
 
 //r.rerender(SelectInputItem)
 

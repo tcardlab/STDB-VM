@@ -7,6 +7,7 @@
     "start": "node server",
     "docs": "node genDocs.js"
   },
+  "type": "commonjs",
   "main": "dist/index.js",
   "bin": {
     "stdb-vm": "./dist/index.js"
@@ -14,6 +15,7 @@
   "author": "Thomas J. Card",
   "license": "ISC",
   "dependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
     "@temir/core": "^0.0.20",
     "@vue/runtime-core": "^3.2.37",
     "axios": "1.5.1",
@@ -26,8 +28,8 @@
     "@temir/cli": "0.0.20",
     "@types/node": "18.6.3",
     "@vitejs/plugin-vue": "3.0.1",
-    "eslint": "8.21.0",
     "@vitejs/plugin-vue-jsx": "2.0.0",
+    "eslint": "8.21.0",
     "rollup-plugin-polyfill-node": "0.12.0",
     "sinon": "14.0.0",
     "tsup": "6.2.1",

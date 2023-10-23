@@ -7,6 +7,8 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import { VitePluginNode } from 'vite-plugin-node';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
 
+import commonjs from '@rollup/plugin-commonjs'
+
 export default defineConfig({
   clearScreen: false,
   logLevel: 'error',
@@ -20,30 +22,37 @@ export default defineConfig({
     {...vue(), enforce:'pre'},
 
     // polyfil node
-    {...VitePluginNode({
+    /* {...VitePluginNode({
       appPath: './index.jsx'
-    }), enforce:'post'},
-    //nodePolyfills(),
+    }), enforce:'post'}, */
+    //{...nodePolyfills(), enforce:'post'},
   ],
   build: {
+    target: 'esnext',
     minify: false,
     lib: {
       entry: './index.jsx',
-      name: 'default',
       fileName: 'index',
+      name: 'default',
       format: ['es']
     },
     rollupOptions: {
-      external: ['vue', '@temir/core', /node_modules/],
+      external: [/node_modules/, '@temir/core', 'vue', 'figures', '@vue/runtime-core'],
+      //plugins: [commonjs()],
       output: {
+        format: 'es',
+        //format: 'es',
+        //format: ['es'],
         //inlineDynamicImports: false,
         //preserveModules: true,
         //sourcemap: false,
         globals: {
           vue: 'Vue',
-          '@temir/core': 'temir'
+          '@temir/core': 'temir',
+          'figures': 'figures',
+          '@vue/runtime-core': 'runtimeCore'
         }
-      }
+      } 
     }
   }
 })
