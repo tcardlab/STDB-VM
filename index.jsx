@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 import { render } from '@temir/core'
 import Selector from './components/Selector.vue'
 
@@ -16,14 +14,16 @@ import { homedir } from "os";
 import path from "path"
 import fs from "fs"
 
+import {name, version, description} from './package.json'
+
 let stdb_path = path.join(homedir(), 'SpacetimeDB')
 
 const program = new Command();
 
 program
-  .name(process.env.npm_package_name)
-  .description('SpacetimeDB version manager!')
-  .version(process.env.npm_package_version)
+  .name(name)
+  .description(description)
+  .version(version)
   // .exitOverride()
 
 
@@ -33,7 +33,6 @@ program.command('current')
     // early versions don't provide path...
     console.log(execSync('where spacetime').toString()) // powershell only (otherwise can use 'where')
     console.log(await getCurrentVersion())
-    // render(App)
   }));
 
 

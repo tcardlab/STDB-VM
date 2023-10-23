@@ -1,26 +1,46 @@
 {
   "name": "stdb-vm",
   "version": "0.0.0",
-  "description": "SpacetimeDB Version Manager",
+  "description": "SpacetimeDB Version Manager!",
   "scripts": {
-    "build": "temir build index.js",
+    "build": "vite build --config build.js",
+    "build:Test": "node dist/index.js",
     "start": "node server",
     "docs": "node genDocs.js"
   },
-  "type": "module",
-  "main": "dist/index.js",
   "bin": {
     "stdb-vm": "./dist/index.js"
+  },
+  "type": "module",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
   },
   "author": "Thomas J. Card",
   "license": "ISC",
   "dependencies": {
-    "@temir/core": "^0.0.20",
-    "axios": "^1.5.1",
-    "commander": "^11.1.0",
-    "figures": "^5.0.0"
+    "@temir/core": "0.0.20",
+    "@vue/runtime-core": "3.2.37",
+    "axios": "1.5.1",
+    "commander": "11.1.0",
+    "vue": "3.2.37"
   },
   "devDependencies": {
-    "@temir/cli": "^0.0.20"
-  }
+    "@temir/cli": "0.0.20",
+    "@types/node": "18.6.3",
+    "@vitejs/plugin-vue": "3.0.1",
+    "@vitejs/plugin-vue-jsx": "2.0.0",
+    "vite": "3.0.1"
+  },
+  "keywords": [
+    "cli",
+    "STDB",
+    "SpacetimeDB",
+    "Version",
+    "Manager",
+    "command line",
+    "vue"
+  ]
 }

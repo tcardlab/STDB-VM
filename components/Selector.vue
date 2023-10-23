@@ -1,7 +1,5 @@
 <script setup lang="ts">
   import { ref, computed } from '@vue/runtime-core'
-  import {Component} from 'vue'
-  import figures from 'figures'
 
   import { TBox, useInput, TText } from '@temir/core'
   import SelectInputItem from './Selector/Item.vue'
@@ -104,7 +102,7 @@
 
 <template>
   <TBox flexDirection="column">
-    <TText v-if="props.frame_size">{{ (atStart && !props.wrap) ? ' ' : figures.triangleUp }}</TText>
+    <TText v-if="props.frame_size">{{ (atStart && !props.wrap) ? ' ' : '▲' }}</TText>
 
     <TBox v-for="item of frame">
       <!-- would be interesting to put the index/len here if formatted/ padded nicely -->
@@ -112,7 +110,7 @@
       <Component :is="props.itemComponent" :isSelected="item.id == selected" :label="''+item.label"/>
     </TBox>
     
-    <TText>{{ (!props.frame_size || (!props.wrap && atEnd)) ? ' ' : figures.triangleDown}}</TText>
+    <TText>{{ (!props.frame_size || (!props.wrap && atEnd)) ? ' ' : '▼' }}</TText>
     <TText color="green">{{ selected+1 }}/{{ mapped.length }}</TText>
   </TBox>
 </template>
