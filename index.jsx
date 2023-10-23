@@ -22,7 +22,7 @@ const program = new Command();
 
 program
   .name(name)
-  .description(description)
+  .description('Alias: stvm\n\n' + description)
   .version(version)
   // .exitOverride()
 

@@ -17,7 +17,7 @@ This tool is useful when:
 
 Change default version release listings with `--remote` flag:
 ```sh
-stdb-vm set -r
+stvm set -r
 # apply given env patch
 ```
 
@@ -26,13 +26,13 @@ stdb-vm set -r
 Use `--direct` flag to point to different local versions simultaneously:
 ```sh
 # Terminal 1
-stdb-vm set version-1 -d # apply given env patch
+stvm set version-1 -d # apply given env patch
 
 # Terminal 2
-stdb-vm set version-2 -d # apply given env patch
+stvm set version-2 -d # apply given env patch
 
 # later - return to default instance
-stdb-vm use-default 
+stvm use-default 
 ```
 
 ## Getting Started
@@ -43,6 +43,8 @@ Using:
 ```shell
 npm i -g <package not released yet>
 stdb-vm <cmd> <args...> <options...>
+# alias
+stvm <cmd> <args...> <options...>
 ```
 <!--https://stackoverflow.com/a/39217735-->
 
@@ -70,6 +72,7 @@ npm install -g .
 - [ ] Doc generations (determine if cmd or import, iterate over help)
 - [ ] Add support for other OS's
 - [ ] Pure semver support so you don't have to be picky with tag names
+    - https://docs.npmjs.com/cli/v6/using-npm/semver
 - [ ] Use loading bar component for downloads
 
 Another question is whether to wrap the whole app in vue
@@ -91,6 +94,8 @@ I may be able to provide a helper command to start so they do not have to pass p
 
 ```
 Usage: stdb-vm [options] [command]
+
+Alias: stvm
 
 SpacetimeDB Version Manager!
 

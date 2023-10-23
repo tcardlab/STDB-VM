@@ -9,7 +9,8 @@
     "docs": "node genDocs.js"
   },
   "bin": {
-    "stdb-vm": "./dist/index.js"
+    "stdb-vm": "./dist/index.js",
+    "stvm": "./dist/index.js"
   },
   "type": "module",
   "module": "./dist/index.js",
