@@ -1,5 +1,3 @@
-// #! /usr/bin/env node
-
 import temir from '@temir/core'
 let { render } = temir
 import Selector from './components/Selector.vue'

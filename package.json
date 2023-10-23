@@ -7,15 +7,18 @@
     "start": "node server",
     "docs": "node genDocs.js"
   },
-  "type": "commonjs",
-  "main": "dist/index.js",
   "bin": {
-    "stdb-vm": "./dist/index.js"
+    "stdb-vm": "./dist/index.mjs"
+  },
+  "module":"./dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
   },
   "author": "Thomas J. Card",
   "license": "ISC",
   "dependencies": {
-    "@rollup/plugin-commonjs": "^25.0.7",
     "@temir/core": "^0.0.20",
     "@vue/runtime-core": "^3.2.37",
     "axios": "1.5.1",
