@@ -7,7 +7,6 @@
     "start": "node server",
     "docs": "node genDocs.js"
   },
-  "type": "module",
   "main": "dist/index.js",
   "bin": {
     "stdb-vm": "./dist/index.js"
@@ -15,14 +14,15 @@
   "author": "Thomas J. Card",
   "license": "ISC",
   "dependencies": {
-    "@temir/core": "^0.0.20",
-    "axios": "^1.5.1",
-    "commander": "^11.1.0",
-    "figures": "^5.0.0"
+    "@temir/core": "0.0.20",
+    "axios": "1.5.1",
+    "commander": "11.1.0",
+    "figures": "5.0.0",
+    "@vue/runtime-core": "3.2.37",
+    "vue": "3.2.37"
   },
   "devDependencies": {
-    "@temir/cli": "^0.0.20",
-    "vue": "^3.2.37",
+    "@temir/cli": "0.0.20",
     "tsup": "6.2.1"
   }
 }

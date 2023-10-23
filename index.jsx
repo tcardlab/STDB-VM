@@ -16,14 +16,17 @@ import { homedir } from "os";
 import path from "path"
 import fs from "fs"
 
+import { name, version } from './package.json'
+
+
 let stdb_path = path.join(homedir(), 'SpacetimeDB')
 
 const program = new Command();
 
 program
-  .name(process.env.npm_package_name)
+  .name(name)
   .description('SpacetimeDB version manager!')
-  .version(process.env.npm_package_version)
+  .version(version)
   // .exitOverride()
 
 
