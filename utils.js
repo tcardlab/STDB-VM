@@ -5,8 +5,8 @@ import fs from 'fs'
 import * as stream from 'stream';
 import axios from 'axios';
 
-import child_process, { execSync } from "node:child_process"
-import { promisify } from 'node:util'
+import child_process, { execSync } from "child_process"
+import { promisify } from 'util'
 const execPromise = promisify(child_process.exec)
 const finished = promisify(stream.finished);
 

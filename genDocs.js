@@ -6,7 +6,7 @@ program.parse(['help'])
 console.log('REEE', x) 
 */
 
-import { execSync } from "node:child_process"
+import { execSync } from "child_process"
 
 let commandNames;
 GET_CMDS : {
@@ -30,8 +30,8 @@ GET_CMDS : {
   //console.log(commandNames)
 }
 
-import { exec } from "node:child_process"
-import {promisify} from 'node:util'
+import { exec } from "child_process"
+import {promisify} from 'util'
 import fs from 'fs'
 const execPro = promisify(exec)
 !(async () => {
