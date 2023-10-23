@@ -6,7 +6,7 @@ let { render } = temir
 
 import SelectInputItem from './components/Selector/Item.vue' 
 
-let r = render(SelectInputItem, {patchConsole: false}) // {patchConsole: false}
+let r = render(<SelectInputItem/>, {patchConsole: false}) // {patchConsole: false}
 
 //r.rerender(SelectInputItem)
 
