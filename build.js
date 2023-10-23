@@ -5,16 +5,19 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import { dependencies } from './package.json'
 
+// Node modules will have to be registered manually here
 let node_libs = [
-  // careful of node:xyz variants
-  'util', 'os', 'child_process', 'stream', 'path', 'fs',
-  'axios', 'commander'
+  // careful to avoid node:xyz variants, just extra work
+  'util', 'os', 'child_process', 'stream', 'path', 'fs'
 ]
+
+let pkg_deps = Object.keys(dependencies)
+let pkg_dep_map = Object.fromEntries(pkg_deps.map(m => [m, m.replaceAll(/[\@\/]/g, '_')]))
 
 export default defineConfig({
   plugins: [
-    {enforce: 'pre', ...vue()},
-    {enforce: 'pre', ...vueJsx()},
+    vue(),
+    vueJsx(),
 
     shebang('./dist/index.js'),
     del('./dist/index.umd.cjs')
@@ -27,17 +30,11 @@ export default defineConfig({
       name: 'default',
     },
     rollupOptions: {
-      external: [
-        //'@temir/core', 'vue', '@vue/runtime-core',
-        ...Object.keys(dependencies),
-        ...node_libs
-      ],
+      external: [ ...pkg_deps, ...node_libs ],
       output: {
         globals: {
-          vue: 'Vue',
-          '@temir/core': 'temir',
-          '@vue/runtime-core': 'runtimeCore',
-          ...Object.fromEntries(node_libs.map(n=>[n,n]))
+          ...pkg_dep_map,
+          ...Object.fromEntries(node_libs.map(m=>[m, m]))
         }
       } 
     }
