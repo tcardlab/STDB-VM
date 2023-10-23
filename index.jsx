@@ -6,11 +6,9 @@ let { render } = temir
 
 import SelectInputItem from './components/Selector/Item.vue' 
 
-console.log('hit')
-let r = render(SelectInputItem) // {patchConsole: false}
+let r = render(SelectInputItem, {patchConsole: false}) // {patchConsole: false}
 
 //r.rerender(SelectInputItem)
-console.log(r)
 
 // import { 
 //   getRemoteVersions, getCurrentVersion, getLatestVersion, 

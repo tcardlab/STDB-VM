@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 
-import vuePlugin from '@vitejs/plugin-vue'
+import path from 'path'
+
+import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { VitePluginNode } from 'vite-plugin-node';
 import nodePolyfills from 'rollup-plugin-polyfill-node';
@@ -8,57 +10,40 @@ import nodePolyfills from 'rollup-plugin-polyfill-node';
 export default defineConfig({
   clearScreen: false,
   logLevel: 'error',
-  entries: ['./index'],
-  clean: false,
-  declaration: true,
-  rollup: {
-    emitCJS: true,
-  },
-  resolve: {
-    mainFields: ['index'],
-  },
-  //root: './',
-  //base: ,
   esbuild: {
     jsxFactory: 'h',
     jsxFragment: 'Fragment',
   },
   plugins: [
-    //nodePolyfills(),
-    vueJsx({
+    // run b4 node to avoid auto ssr detection
+    {... vueJsx(), enforce:'pre'},
+    {...vue(), enforce:'pre'},
 
-    }),
-    vuePlugin({
-      
-    }),
-    ...VitePluginNode({
-      appPath: './dist/index.mjs',
-      //tsCompiler: '',
-    }),
-    
+    // polyfil node
+    {...VitePluginNode({
+      appPath: './index.jsx'
+    }), enforce:'post'},
+    //nodePolyfills(),
   ],
   build: {
     minify: false,
-    //target: 'modules',
-    outDir: './dist',
     lib: {
-      entry: 'index.jsx',
+      entry: './index.jsx',
       name: 'default',
-      fileName: 'index.js',
-      formats: ['es']
+      fileName: 'index',
+      format: ['es']
     },
     rollupOptions: {
-      external: ['@vue/runtime-core', '@temir/core', 'vue/server-renderer', 'vue'],
-     /*  output: {
-        //entryFileNames: `index.js`,
-        // manualChunks: undefined,
+      external: ['vue', '@temir/core', /node_modules/],
+      output: {
+        //inlineDynamicImports: false,
+        //preserveModules: true,
+        //sourcemap: false,
         globals: {
-          '@vue/runtime-core': 'runtimeCore',
-          '@temir/core': 'temir',
-          'vue/server-renderer': 'serverRenderer',
-          'vue': 'vue'
+          vue: 'Vue',
+          '@temir/core': 'temir'
         }
-      } */
+      }
     }
   }
 })
