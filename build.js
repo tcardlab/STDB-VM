@@ -3,21 +3,21 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import { VitePluginNode } from 'vite-plugin-node';
-import nodePolyfills from 'rollup-plugin-polyfill-node';
+import { dependencies } from './package.json'
 
-import commonjs from '@rollup/plugin-commonjs'
+let node_libs = [
+  // careful of node:xyz variants
+  'util', 'os', 'child_process', 'stream', 'path', 'fs',
+  'axios', 'commander'
+]
 
 export default defineConfig({
   plugins: [
     {enforce: 'pre', ...vue()},
     {enforce: 'pre', ...vueJsx()},
 
-    ...VitePluginNode({
-      
-    }).map(p=> ({...p, enforce:'post'})), 
-    shebang('./dist/index.mjs'),
-    //del('./dist/index.umd.js')
+    shebang('./dist/index.js'),
+    del('./dist/index.umd.cjs')
   ],
   build: {
     minify: false,
@@ -28,19 +28,16 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        /node_modules/, '@temir/core', 'vue', 'figures', '@vue/runtime-core',
-        'util', 'os', 'child_process', 'axios', 'commander', 'stream', 'path', 'fs'
+        //'@temir/core', 'vue', '@vue/runtime-core',
+        ...Object.keys(dependencies),
+        ...node_libs
       ],
-      plugins: [
-        nodePolyfills(),
-        //commonjs()
-      ], 
       output: {
         globals: {
           vue: 'Vue',
           '@temir/core': 'temir',
-          'figures': 'figures',
-          '@vue/runtime-core': 'runtimeCore'
+          '@vue/runtime-core': 'runtimeCore',
+          ...Object.fromEntries(node_libs.map(n=>[n,n]))
         }
       } 
     }
