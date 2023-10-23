@@ -48,9 +48,16 @@ stdb-vm <cmd> <args...> <options...>
 
 Developing:
 ```shell
-# clone
+# clone, then:
 npm i
 npm start -- <cmd> <args...> <options...>
+
+# build
+npm run build
+npm run built:Test -- <cmd> <args...> <options...>
+
+# test globally
+npm install -g .
 ```
 
 
@@ -85,7 +92,7 @@ I may be able to provide a helper command to start so they do not have to pass p
 ```
 Usage: stdb-vm [options] [command]
 
-SpacetimeDB version manager!
+SpacetimeDB Version Manager!
 
 Options:
   -V, --version   output the version number
