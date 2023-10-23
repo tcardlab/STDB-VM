@@ -1,8 +1,5 @@
-import temir from '@temir/core'
-let { render } = temir
+import { render } from '@temir/core'
 import Selector from './components/Selector.vue'
-
-//import SelectInputItem from './components/Selector/Item.vue' 
 
 let arr = [
   {label: 'label', value: 'value'}

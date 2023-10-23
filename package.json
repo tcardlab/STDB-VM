@@ -19,28 +19,18 @@
   "author": "Thomas J. Card",
   "license": "ISC",
   "dependencies": {
-    "@temir/core": "^0.0.20",
-    "@vue/runtime-core": "^3.2.37",
+    "@temir/core": "0.0.20",
+    "@vue/runtime-core": "3.2.37",
     "axios": "1.5.1",
     "commander": "11.1.0",
     "figures": "5.0.0",
-    "vue": "^3.2.37"
+    "vue": "3.2.37"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "0.25.2",
     "@temir/cli": "0.0.20",
     "@types/node": "18.6.3",
     "@vitejs/plugin-vue": "3.0.1",
     "@vitejs/plugin-vue-jsx": "2.0.0",
-    "eslint": "8.21.0",
-    "rollup-plugin-polyfill-node": "0.12.0",
-    "sinon": "14.0.0",
-    "tsup": "6.2.1",
-    "typescript": "4.7.4",
-    "unbuild": "0.7.6",
-    "vite": "3.0.1",
-    "vite-node": "0.19.1",
-    "vite-plugin-node": "2.0.0",
-    "vitest": "0.20.3"
+    "vite": "3.0.1"
   }
 }
