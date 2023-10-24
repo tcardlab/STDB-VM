@@ -5,7 +5,7 @@
 <br/>
 
 This tool is useful when:
-1. Wanting to change STDB versions with ease
+1. Wanting to change STDB versions with ease (run old projects, git-bisect, upgrading etc.)
 2. Working on two STDB projects at the same time and switching relatively frequently.
 3. Frequently switching between two branches on different versions.
 4. Testing how old and new systems interact with each other: 
@@ -27,9 +27,11 @@ Use `--direct` flag to point to different local versions simultaneously:
 ```sh
 # Terminal 1
 stvm set version-1 -d # apply given env patch
+stvm start
 
 # Terminal 2
 stvm set version-2 -d # apply given env patch
+stvm start
 
 # later - return to default instance
 stvm use-default 
@@ -54,6 +56,9 @@ Developing:
 npm i
 npm start -- <cmd> <args...> <options...>
 
+# Generate cli docs
+npm run docs
+
 # build
 npm run build
 npm run built:Test -- <cmd> <args...> <options...>
@@ -74,6 +79,7 @@ npm install -g .
 - [ ] Pure semver support so you don't have to be picky with tag names
     - https://docs.npmjs.com/cli/v6/using-npm/semver
 - [ ] Use loading bar component for downloads
+- [ ] rmdb cmd to remove db's in .spacetime/versions
 
 Another question is whether to wrap the whole app in vue
 or whether to just use components as needed.
@@ -100,20 +106,25 @@ Alias: stvm
 SpacetimeDB Version Manager!
 
 Options:
-  -V, --version   output the version number
-  -h, --help      display help for command
+  -V, --version    output the version number
+  -h, --help       display help for command
 
 Commands:
-  current         Show active SpacetimeDB version and path.
-  set [options]   Set active SpacetimeDB version by tag name. (Has selector for
-                  no args)
-  use-default     Set SpacetimeDB path back to default `{homeDir}/SpacetimeDB`.
-  latest          Check latest release on github.
-  list            List downloaded SpacetimeDB versions.
-  releases        List SpacetimeDB releases on github.
-  load [options]  Download SpacetimeDB version. (Has selector for no args)
-  rm [options]    Delete SpacetimeDB version. (Has selector for no args)
-  help [command]  display help for command
+  current          Show active SpacetimeDB version and path.
+  set [options]    Set active SpacetimeDB version by tag name. (Has selector
+                   for no args)
+  use-default      Set SpacetimeDB path back to default
+                   `{homeDir}/SpacetimeDB`.
+  latest           Check latest release on github.
+  list             List downloaded SpacetimeDB versions.
+  releases         List SpacetimeDB releases on github.
+  load [options]   Download SpacetimeDB version. (Has selector for no args)
+  rm [options]     Delete SpacetimeDB version. (Has selector for no args)
+  start [options]  Start SpacetimeDB runtime with a version specific DB
+                   directory.
+                   (Mitigates versions introducing breaking changes and avoids
+                   file lock allowing multiple versions to run at once.)
+  help [command]   display help for command
 ```
 
 <h3>current:</h3>
@@ -208,5 +219,19 @@ Delete SpacetimeDB version. (Has selector for no args)
 Options:
   <version>   Specific version to remove.
   --all       Download specific version.
+  -h, --help  display help for command
+```
+
+<h3>start:</h3>
+
+```
+Usage: stdb-vm start [options]
+
+Start SpacetimeDB runtime with a version specific DB directory.
+(Mitigates versions introducing breaking changes and avoids file lock allowing
+multiple versions to run at once.)
+
+Options:
+  <args...>   argument passthrough to `spacetime start`
   -h, --help  display help for command
 ```

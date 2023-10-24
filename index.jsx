@@ -9,7 +9,7 @@ import {
 
 import { Command } from 'commander';
 
-import {execSync} from 'child_process'
+import {execSync, spawn} from 'child_process'
 import { homedir } from "os";
 import path from "path"
 import fs from "fs"
@@ -31,7 +31,7 @@ program.command('current')
   .description('Show active SpacetimeDB version and path.')
   .action(noRender(async () => {
     // early versions don't provide path...
-    console.log(execSync('where spacetime').toString()) // powershell only (otherwise can use 'where')
+    console.log(execSync('where spacetime').toString().split('\n')?.[0]) // can match multiple
     console.log(await getCurrentVersion())
   }));
 
@@ -199,7 +199,6 @@ program.command('load')
 
 
 program.command('rm')
-  .allowUnknownOption()
   .description('Delete SpacetimeDB version. (Has selector for no args)')
   .option('<version>', 'Specific version to remove.')
   .option('--all', 'Download specific version.')
@@ -231,11 +230,43 @@ program.command('rm')
     process.exit(0)
   })
 
+
+// doesn't like hmr due to db lock...
+program.command('start')
+  .allowUnknownOption() // for arg pass through
+  .description('Start SpacetimeDB runtime in a version specific DB directory.\n(\n  Mitigates versions introducing breaking changes on default. \n  Also avoids file lock, allowing multiple versions to run at once.\n)')
+  .option('<args...>', 'argument passthrough to `spacetime start`\n(Note: non-flag arg will override versioned db path)')
+  .action(async (options, cmd) => {
+    // get current version/path (direct path vs default)
+    let stdb_path = path.dirname(
+      execSync('where spacetime').toString().split('\n')?.[0] // can match multiple
+    )
+    let isDefault = /SpacetimeDB$/.test(stdb_path)
+
+    // if they passed an arg, treat as override
+    let override = cmd.args.find(arg => arg[0]!=='-')
+
+    let ls;
+    if (override || isDefault) {
+      // npm start -- start C:\Users\user\.spacetime
+      //spawn("spacetime", ['start', override], {stdio:'inherit'})
+      ls = spawn("spacetime", ['start', ...cmd.args], {stdio:'inherit'})
+    }
+
+    else {
+      let version = stdb_path.match(/versions[\\\/](.*?)$/)?.[1]
+      if (!version) throw new Error(`failed to match version on path: ${stdb_path}`)
+
+      let db_version_path = path.join( homedir(), '.spacetime', 'versions', version )
+
+      ls = spawn("spacetime", ['start',  db_version_path, ...cmd.args], {stdio:'inherit'})
+    }
+
+    ls.on('close', (code)=>{process.exit(code)})
+  })
+
+
+// todo:
+// program.command('rmdb')
+
 program.parse()
-
-/* if (process.env['npm_lifecycle_event'] !== 'docs') {
-  // dont run for doc gen
-  program.parse()
-}
-
-export default program */

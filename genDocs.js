@@ -36,7 +36,7 @@ import fs from 'fs'
 const execPro = promisify(exec)
 !(async () => {
   let i=1;
-  let cancel = setInterval(()=>console.log(i++, 'seconds (takes ~4s)'), 1e3)
+  let cancel = setInterval(()=>console.log(i++, 'seconds (takes ~5s)'), 1e3)
   let start = Date.now()
 
   let docObj = {}
