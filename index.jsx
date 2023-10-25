@@ -36,10 +36,21 @@ program.command('current')
   }));
 
 
+// let renderPromise = async (component, cb) => {
+//   return new Promise((resolve, reject) => {
+//     let r;
+//     let resolvableCB = cb(()=>r, resolve, reject)
+//     r = render(component(resolvableCB))
+//   })
+// }
+
 let renderPromise = async (component, cb) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let r;
-    let resolvableCB = cb(()=>r, resolve, reject)
+    let resolvableCB = (...args)=>{ 
+      ender(r); // exit first to prevent double log issue
+      resolve(cb(...args))
+    }
     r = render(component(resolvableCB))
   })
 }
@@ -225,15 +236,16 @@ program.command('rm')
         process.exit(1)
       }
 
-      let version;
-      await renderWait(
+      let version = await renderPromise(
         cb => <Selector items={localVersions} onSubmit={cb} wrap={true}/>,
         selected => {
           console.log('rm:', selected.value)
-          version = selected.value
+          return selected.value
       })
+
       if (!version) process.exit(1) // exit without selecting
-      rmVersion(version)
+      //rmVersion(version)
+      console.log('rm version:', version)
     }
 
     process.exit(0)
