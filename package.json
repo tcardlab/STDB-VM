@@ -20,6 +20,8 @@
     }
   },
   "author": "Thomas J. Card",
+  "repository": "https://github.com/tcardlab/STDB-VM",
+  "homepage": "https://github.com/tcardlab/STDB-VM#README",
   "license": "ISC",
   "dependencies": {
     "@temir/core": "0.0.20",

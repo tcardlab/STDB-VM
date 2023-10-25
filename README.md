@@ -15,7 +15,23 @@ This tool is useful when:
 
 <br/>
 
-Change default version release listings with `--remote` flag:
+
+## Getting Started
+
+<!-- > Assumes you already have [SpacetimeDB](https://spacetimedb.com/install) installed -->
+
+### Using:
+```shell
+npm i -g stdb-vm
+stdb-vm <cmd> <args...> <options...>
+# alias
+stvm <cmd> <args...> <options...>
+```
+<!--https://stackoverflow.com/a/39217735-->
+
+<br/>
+
+Set default version from release listings with `--remote` flag:
 ```sh
 stvm set -r
 # apply given env patch
@@ -37,20 +53,7 @@ stvm start -l="host2" # please ensure host exists
 stvm use-default 
 ```
 
-## Getting Started
-
-<!-- > Assumes you already have [SpacetimeDB](https://spacetimedb.com/install) installed -->
-
-Using:
-```shell
-npm i -g <package not released yet>
-stdb-vm <cmd> <args...> <options...>
-# alias
-stvm <cmd> <args...> <options...>
-```
-<!--https://stackoverflow.com/a/39217735-->
-
-Developing:
+### Developing:
 ```shell
 # clone, then:
 npm i
@@ -70,24 +73,19 @@ npm uninstall -g stdb-vm
 
 
 ## Todo:
-- [ ] Selection lists
+- [x] Selection lists
 - [ ] Publish: Build, npm dist, and make globally accessible 
 <!-- https://blog.logrocket.com/building-typescript-cli-node-js-commander/#making-cli-globally-accessible -->
 <!-- https://stackoverflow.com/a/39217735 -->
 - [ ] Refactor (cmd route like directories, group vue and commander cmds, components dir)
-- [ ] Doc generations (determine if cmd or import, iterate over help)
+- [x] Doc generations (determine if cmd or import, iterate over help)
 - [ ] Add support for other OS's
 - [ ] Pure semver support so you don't have to be picky with tag names
     - https://docs.npmjs.com/cli/v6/using-npm/semver
 - [ ] Use loading bar component for downloads
 - [ ] rmdb cmd to remove db's in .spacetime/versions
 
-Another question is whether to wrap the whole app in vue
-or whether to just use components as needed.
-
-I am not sure if the `.spacetime` directory is subject to breaking changes.
-I may need to version that as well and inform users to pass that path via `spacetime start <STDB_PATH>`
-I may be able to provide a helper command to start so they do not have to pass path manually.
+I wonder if perhaps I should only allow `-d` to be applied via env patch so people don't wind up stuck on a direct version without realizing.
 
 <br/>
 
