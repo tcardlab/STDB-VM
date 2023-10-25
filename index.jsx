@@ -37,29 +37,24 @@ program.command('current')
 
 
 let renderPromise = async (component, cb) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     let r;
-    let resolvableCB = cb(()=>r, resolve, reject)
+    let resolvableCB = async (...args)=>{ 
+      ender(r); // exit first to prevent double log issue
+      resolve(await cb(...args))
+    }
     r = render(component(resolvableCB))
   })
 }
 
-// let renderWait = (component, cb) => {
-//   // variant that exposes the render process and ender
-//   let r;
-//   let resolvableCB = cb(()=>ender(r)/* Kill render cb */, r)
-//   r = render(component(resolvableCB))
-//   return r.waitUntilExit()
-// }
-
-let renderWait = (component, cb) => {
-  let r;
-  let resolvableCB = (...args)=>{ 
-    ender(r); // exit first to prevent double log issue
-    return cb(...args) 
-  }
+let renderWait = async (component, cb) => {
+  let r, argsTmp;
+  
+  let resolvableCB = (...args)=>{ argsTmp=args; ender(r) }
   r = render(component(resolvableCB))
-  return r.waitUntilExit()
+  await r.waitUntilExit() // wait for resolvableCB() to execute ender()
+
+  return await cb(...argsTmp)
 }
 
 function toSelectable(list) {
