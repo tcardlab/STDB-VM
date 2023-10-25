@@ -90,9 +90,9 @@ program.command('set')
       await renderWait(
         cb => <Selector items={versionArr} onSubmit={cb} wrap={true}/>,
         exit => selected => {
+          exit() // exit first to prevent double log issue
           console.log('Selected:', selected.value)
           version = selected.value
-          exit()
         }
       )
       if(!version) process.exit(1) // quit without selecting
@@ -190,8 +190,8 @@ program.command('load')
 
     let r = render(<Selector items={remoteVersions} onSubmit={handleLoad} wrap={true} frame={5}/>)
     async function handleLoad(version, index) {
-      console.log('Load:', version.value)
       ender(r)
+      console.log('Load:', version.value)
       await downloadRelease(version.value)
       process.exit(0)
     }
@@ -219,9 +219,9 @@ program.command('rm')
       await renderWait(
         cb => <Selector items={localVersions} onSubmit={cb} wrap={true}/>,
         exit => selected => {
+          exit()
           console.log('rm:', selected.value)
           version = selected.value
-          exit()
       })
       if (!version) process.exit(1) // exit without selecting
       rmVersion(version)
