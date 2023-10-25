@@ -4,11 +4,10 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import { dependencies } from './package.json'
+import { builtinModules } from "module"
 
-// Node modules will have to be registered manually here
-let node_libs = [
-  'util', 'os', 'child_process', 'stream', 'path', 'fs'
-].flatMap(m=>[m, `node:${m}`])
+let node_libs = builtinModules.flatMap(m=>[m, `node:${m}`])
+let node_libs_map = Object.fromEntries(node_libs.map(m => [m, m.replaceAll(/[\@\/\:]/g, '_')]))
 
 let pkg_deps = Object.keys(dependencies)
 let pkg_dep_map = Object.fromEntries(pkg_deps.map(m => [m, m.replaceAll(/[\@\/\:]/g, '_')]))
@@ -31,10 +30,7 @@ export default defineConfig({
     rollupOptions: {
       external: [ ...pkg_deps, ...node_libs ],
       output: {
-        globals: {
-          ...pkg_dep_map,
-          ...Object.fromEntries(node_libs.map(m=>[m, m]))
-        }
+        globals: { ...pkg_dep_map, ...node_libs_map }
       } 
     }
   }
