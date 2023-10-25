@@ -27,11 +27,11 @@ Use `--direct` flag to point to different local versions simultaneously:
 ```sh
 # Terminal 1
 stvm set version-1 -d # apply given env patch
-stvm start
+stvm start -l="host1" # please ensure host exists
 
 # Terminal 2
 stvm set version-2 -d # apply given env patch
-stvm start
+stvm start -l="host2" # please ensure host exists
 
 # later - return to default instance
 stvm use-default 
