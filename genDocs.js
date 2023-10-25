@@ -1,11 +1,3 @@
-// process exits, so we cant do this...
-/* process.argv = []
-import program from './index.jsx'
-
-program.parse(['help'])
-console.log('REEE', x) 
-*/
-
 import { execSync } from "child_process"
 
 let commandNames;
@@ -21,7 +13,6 @@ GET_CMDS : {
     .filter(line => /^\s\s\w/.test(line))
     .map(line=>line.trim().split(' ')[0])
     .filter(name => name !== '') // Filter out empty strings
-    //.sort()
   
   // CMDs are in order we defined them
   // But help is added last, this move it to the front
@@ -46,12 +37,12 @@ const execPro = promisify(exec)
       let cmdRes = execSync(`npm start help ${cmd==='help' ? '' : cmd}`).toString()
       docObj[cmd] = cmdRes
     }
-   */}
+  */}
   ASYNC_EXEC : { // 4sec
     for (let [i, cmd] of Object.entries(commandNames)) {
       let cmdRes = execPro(`npm start help ${cmd==='help' ? '' : cmd}`)
       docObj[cmd] = cmdRes
-      cmdRes.then(v=>docObj[cmd]=v.stdout) // replace l8r
+      cmdRes.then(v=>docObj[cmd]=v.stdout) // define val to be replace l8r
     }
     await Promise.all(Object.values(docObj))
   }
