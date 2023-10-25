@@ -53,7 +53,8 @@ let renderWait = async (component, cb) => {
   let resolvableCB = (...args)=>{ argsTmp=args; ender(r) }
   r = render(component(resolvableCB))
   await r.waitUntilExit() // wait for resolvableCB() to execute ender()
-
+  // We forward args to avoid race condition and double console.log
+  if(!Array.isArray(argsTmp)) process.exit(1) // quit without selecting
   return await cb(...argsTmp)
 }
 
@@ -93,14 +94,12 @@ program.command('set')
       }
 
       // Wait for version to be selected
-      await renderWait(
+      version = await renderWait(
         cb => <Selector items={versionArr} onSubmit={cb} wrap={true}/>,
         selected => {
           console.log('Selected:', selected.value)
-          version = selected.value
-        }
-      )
-      if(!version) process.exit(1) // quit without selecting
+          return selected.value
+      })
     }
 
     // If version doesn't exist: attempt download
@@ -220,14 +219,12 @@ program.command('rm')
         process.exit(1)
       }
 
-      let version;
-      await renderWait(
+      let version = await renderWait(
         cb => <Selector items={localVersions} onSubmit={cb} wrap={true}/>,
         selected => {
           console.log('rm:', selected.value)
-          version = selected.value
+          return selected.value
       })
-      if (!version) process.exit(1) // exit without selecting
       rmVersion(version)
     }
 
