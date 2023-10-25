@@ -44,9 +44,20 @@ let renderPromise = async (component, cb) => {
   })
 }
 
+// let renderWait = (component, cb) => {
+//   // variant that exposes the render process and ender
+//   let r;
+//   let resolvableCB = cb(()=>ender(r)/* Kill render cb */, r)
+//   r = render(component(resolvableCB))
+//   return r.waitUntilExit()
+// }
+
 let renderWait = (component, cb) => {
   let r;
-  let resolvableCB = cb(()=>ender(r)/* Kill render cb */, r)
+  let resolvableCB = (...args)=>{ 
+    ender(r); // exit first to prevent double log issue
+    return cb(...args) 
+  }
   r = render(component(resolvableCB))
   return r.waitUntilExit()
 }
@@ -89,8 +100,7 @@ program.command('set')
       // Wait for version to be selected
       await renderWait(
         cb => <Selector items={versionArr} onSubmit={cb} wrap={true}/>,
-        exit => selected => {
-          exit() // exit first to prevent double log issue
+        selected => {
           console.log('Selected:', selected.value)
           version = selected.value
         }
@@ -218,8 +228,7 @@ program.command('rm')
       let version;
       await renderWait(
         cb => <Selector items={localVersions} onSubmit={cb} wrap={true}/>,
-        exit => selected => {
-          exit()
+        selected => {
           console.log('rm:', selected.value)
           version = selected.value
       })
