@@ -234,7 +234,7 @@ program.command('rm')
 // doesn't like hmr due to db lock...
 program.command('start')
   .allowUnknownOption() // for arg pass through
-  .description('Start SpacetimeDB runtime in a version specific DB directory.\n(\n  Mitigates versions introducing breaking changes on default. \n  Also avoids file lock, allowing multiple versions to run at once.\n)')
+  .description('Start SpacetimeDB runtime in a version specific DB directory.\n  (\n    Mitigates versions introducing breaking changes on default.\n    Also avoids file lock, allowing multiple versions to run at once.\n  )')
   .option('<args...>', 'argument passthrough to `spacetime start`\n(Note: non-flag arg will override versioned db path)')
   .action(async (options, cmd) => {
     // get current version/path (direct path vs default)

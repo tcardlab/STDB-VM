@@ -63,8 +63,9 @@ npm run docs
 npm run build
 npm run built:Test -- <cmd> <args...> <options...>
 
-# test globally
+# test globally (make sure to build first!)
 npm install -g .
+npm uninstall -g stdb-vm
 ```
 
 
@@ -120,10 +121,11 @@ Commands:
   releases         List SpacetimeDB releases on github.
   load [options]   Download SpacetimeDB version. (Has selector for no args)
   rm [options]     Delete SpacetimeDB version. (Has selector for no args)
-  start [options]  Start SpacetimeDB runtime with a version specific DB
-                   directory.
-                   (Mitigates versions introducing breaking changes and avoids
-                   file lock allowing multiple versions to run at once.)
+  start [options]  Start SpacetimeDB runtime in a version specific DB directory.
+    (
+      Mitigates versions introducing breaking changes on default.
+      Also avoids file lock, allowing multiple versions to run at once.
+    )
   help [command]   display help for command
 ```
 
@@ -227,11 +229,14 @@ Options:
 ```
 Usage: stdb-vm start [options]
 
-Start SpacetimeDB runtime with a version specific DB directory.
-(Mitigates versions introducing breaking changes and avoids file lock allowing
-multiple versions to run at once.)
+Start SpacetimeDB runtime in a version specific DB directory.
+  (
+    Mitigates versions introducing breaking changes on default.
+    Also avoids file lock, allowing multiple versions to run at once.
+  )
 
 Options:
   <args...>   argument passthrough to `spacetime start`
+              (Note: non-flag arg will override versioned db path)
   -h, --help  display help for command
 ```
