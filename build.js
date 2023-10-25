@@ -7,12 +7,11 @@ import { dependencies } from './package.json'
 
 // Node modules will have to be registered manually here
 let node_libs = [
-  // careful to avoid node:xyz variants, just extra work
   'util', 'os', 'child_process', 'stream', 'path', 'fs'
-]
+].flatMap(m=>[m, `node:${m}`])
 
 let pkg_deps = Object.keys(dependencies)
-let pkg_dep_map = Object.fromEntries(pkg_deps.map(m => [m, m.replaceAll(/[\@\/]/g, '_')]))
+let pkg_dep_map = Object.fromEntries(pkg_deps.map(m => [m, m.replaceAll(/[\@\/\:]/g, '_')]))
 
 export default defineConfig({
   plugins: [
