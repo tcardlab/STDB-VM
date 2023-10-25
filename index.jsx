@@ -44,16 +44,16 @@ program.command('current')
 //   })
 // }
 
-let renderPromise = async (component, cb) => {
-  return new Promise(async (resolve, reject) => {
-    let r;
-    let resolvableCB = (...args)=>{ 
-      ender(r); // exit first to prevent double log issue
-      resolve(cb(...args))
-    }
-    r = render(component(resolvableCB))
-  })
-}
+// let renderPromise = async (component, cb) => {
+//   return new Promise(async (resolve, reject) => {
+//     let r;
+//     let resolvableCB = (...args)=>{ 
+//       ender(r); // exit first to prevent double log issue
+//       resolve(cb(...args))
+//     }
+//     r = render(component(resolvableCB))
+//   })
+// }
 
 // let renderWait = (component, cb) => {
 //   // variant that exposes the render process and ender
@@ -71,6 +71,19 @@ let renderWait = (component, cb) => {
   }
   r = render(component(resolvableCB))
   return r.waitUntilExit()
+}
+
+let renderPromise = async (component, cb) => {
+  let r, argsTmp;
+  
+  let resolvableCB = (...args)=>{ 
+    ender(r); // exit first to prevent double log issue
+    argsTmp=args
+  }
+  r = render(component(resolvableCB))
+  await r.waitUntilExit()
+
+  return await cb(...argsTmp)
 }
 
 function toSelectable(list) {
@@ -243,9 +256,11 @@ program.command('rm')
           return selected.value
       })
 
+      console.log('rm version:', version)
+
       if (!version) process.exit(1) // exit without selecting
       //rmVersion(version)
-      console.log('rm version:', version)
+      
     }
 
     process.exit(0)
